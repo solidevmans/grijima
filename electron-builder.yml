@@ -1,0 +1,29 @@
+appId: com.dirend7.ea-usecase-studio
+productName: EA UseCase Studio
+directories:
+  buildResources: build
+  output: dist
+files:
+  - out/**
+  - package.json
+# 모델 파일은 앱에 동봉한다 — 사용자가 고르는 것이 아니다.
+# 설치 후 <설치경로>/resources/model/*.gguf 로 들어가고 앱이 알아서 찾는다.
+extraResources:
+  - from: resources/model
+    to: model
+    filter:
+      - '**/*.gguf'
+asarUnpack:
+  - resources/**
+  # 네이티브 애드온과 llama.cpp 공유 라이브러리는 asar 안에서 dlopen 할 수 없다
+  - node_modules/node-llama-cpp/**
+  - node_modules/@node-llama-cpp/**
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  shortcutName: EA UseCase Studio

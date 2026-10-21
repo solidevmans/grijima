@@ -1,0 +1,21 @@
+node_modules/
+out/
+dist/
+*.log
+.DS_Store
+
+# 작업 산출물
+*.eaucs
+*.xmi
+
+# 예시·평가 자료 (사업 문서라 저장소에 넣지 않는다)
+examples/
+eval/sets/
+eval/results/
+
+# 동봉 모델 (설치본에만 포장, 저장소에는 넣지 않는다)
+resources/model/*.gguf
+
+logs/
+screens/
+*.tsbuildinfo

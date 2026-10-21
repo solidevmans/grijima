@@ -1,0 +1,49 @@
+{
+  "name": "ea-usecase-studio",
+  "version": "0.1.0",
+  "description": "요구사항 정의서 → 유스케이스 → EA XMI 변환/편집 스튜디오",
+  "main": "./out/main/index.js",
+  "author": "dirend7",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev",
+    "start": "electron-vite preview",
+    "build": "npm run typecheck && electron-vite build",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json",
+    "typecheck:web": "tsc --noEmit -p tsconfig.web.json",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "smoke": "esbuild scripts/smoke.ts --bundle --platform=node --format=cjs --outfile=out/smoke.cjs --alias:@shared=./src/shared --external:node-llama-cpp --log-level=warning && node out/smoke.cjs out",
+    "dist:win": "npm run build && electron-builder --win --config electron-builder.yml",
+    "example": "esbuild scripts/make-example.ts --bundle --platform=node --format=cjs --outfile=out/make-example.cjs --alias:@shared=./src/shared --external:exceljs --external:node-llama-cpp --log-level=warning && node out/make-example.cjs examples",
+    "test": "npm run smoke && npm run test:meta && npm run test:small && npm run test:rel && npm run test:vault && npm run test:zip",
+    "test:zip": "esbuild scripts/test-zip.ts --bundle --platform=node --format=cjs --outfile=out/test-zip.cjs --alias:@shared=./src/shared --external:node-llama-cpp --log-level=warning && node out/test-zip.cjs out && powershell -NoProfile -Command \"Expand-Archive -Path out/test-zip.zip -DestinationPath out/test-zip -Force; if (-not (Get-ChildItem -Recurse -Filter 00-actors.png out/test-zip)) { throw 'Expand-Archive: no files' }; Write-Host '  OK Expand-Archive (Windows) unpacked it'\"",
+    "test:rel": "esbuild scripts/test-relations.ts --bundle --platform=node --format=cjs --outfile=out/test-relations.cjs --alias:@shared=./src/shared --external:node-llama-cpp --log-level=warning && node out/test-relations.cjs",
+    "eval": "esbuild eval/score.ts --bundle --platform=node --format=cjs --outfile=out/eval-score.cjs --alias:@shared=./src/shared --external:node-llama-cpp --log-level=warning && node out/eval-score.cjs",
+    "test:vault": "esbuild scripts/test-vault.ts --bundle --platform=node --format=cjs --outfile=out/test-vault.cjs --alias:@shared=./src/shared --external:node-llama-cpp --log-level=warning && node out/test-vault.cjs",
+    "test:small": "esbuild scripts/test-small-model.ts --bundle --platform=node --format=cjs --outfile=out/test-small-model.cjs --alias:@shared=./src/shared --external:node-llama-cpp --log-level=warning && node out/test-small-model.cjs",
+    "e2e": "esbuild scripts/run-e2e-excel.ts --bundle --platform=node --format=cjs --outfile=out/run-e2e-excel.cjs --alias:@shared=./src/shared --external:exceljs --external:node-llama-cpp --log-level=warning && node out/run-e2e-excel.cjs",
+    "e2e:text": "esbuild scripts/run-e2e-excel.ts --bundle --platform=node --format=cjs --outfile=out/run-e2e-excel.cjs --alias:@shared=./src/shared --external:exceljs --external:node-llama-cpp --log-level=warning && node out/run-e2e-excel.cjs examples/요구사항정의서_원문.md",
+    "test:meta": "esbuild scripts/test-metafilter.ts --bundle --platform=node --format=cjs --outfile=out/test-metafilter.cjs --alias:@shared=./src/shared --external:node-llama-cpp --log-level=warning && node out/test-metafilter.cjs",
+    "test:embedded": "esbuild scripts/test-embedded.ts --bundle --platform=node --format=cjs --outfile=out/test-embedded.cjs --alias:@shared=./src/shared --external:node-llama-cpp --log-level=warning && node out/test-embedded.cjs",
+    "test:layout": "esbuild scripts/test-layout.ts --bundle --platform=node --format=cjs --outfile=out/test-layout.cjs --alias:@shared=./src/shared --external:node-llama-cpp --log-level=warning && node out/test-layout.cjs"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "node-llama-cpp": "^3.21.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.17",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^2.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "zustand": "^5.0.2"
+  }
+}
